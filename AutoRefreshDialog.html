@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Auto Refresh Settings</title>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+  <!-- Bootstrap CSS & JS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <!-- Tableau Extension Library -->
+  <script src="../../lib/tableau.extensions.1.latest.js"></script>
+
+  <!-- Extension Script -->
+  <script src="./AutoRefreshDialog.js"></script>
+
+  <!-- Custom Styles -->
+  <style>
+    body {
+      padding-top: 30px;
+    }
+    .branding {
+      margin-bottom: 30px;
+    }
+    .branding img {
+      max-height: 80px;
+    }
+    .form-section {
+      margin-bottom: 20px;
+    }
+    #closeButton {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Branding Row -->
+    <div class="row branding">
+      <div class="col-xs-6 text-left">
+        <img src="C:\Users\BCS-41\Downloads\TBIX automation code\images.png" alt="Data Refresh" class="img-responsive">
+      </div>
+      <div class="col-xs-6 text-right">
+        <img src="C:\Users\BCS-41\Downloads\TBIX automation code\logo.jpg" alt="Prosperitas Logo" class="img-responsive">
+      </div>
+    </div>
+
+    <!-- Header -->
+    <h3>Auto Refresh Extension</h3>
+    <p class="text-muted">Automatically updates selected data sources at a specified interval.</p>
+    <hr>
+
+    <!-- Data Sources Section -->
+    <div class="form-section">
+      <label><strong>Choose Data Sources:</strong></label>
+      <div id="datasources" class="checkbox" style="margin-left: 10px;">
+        <!-- Dynamically populated by JS -->
+      </div>
+    </div>
+
+    <!-- Interval Section -->
+    <div class="form-section">
+      <label for="interval"><strong>Refresh Interval (in seconds):</strong></label>
+      <input type="number" id="interval" class="form-control" min="15" max="3600" placeholder="Enter seconds (15 - 3600)" style="max-width: 250px;">
+    </div>
+
+    <!-- Action Button -->
+    <button id="closeButton" class="btn btn-primary">Begin Auto Refresh</button>
+
+  </div>
+</body>
+</html>
