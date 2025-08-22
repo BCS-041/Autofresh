@@ -173,10 +173,27 @@
     }
   }
 
-  tableau.extensions.initializeAsync().then(() => {
-    populateDatasources();
-  });
+  tableau.extensions.initializeAsync(
+  {
+    // Handler for the configure menu item
+    'configure': () => {
+      // Show your config panel again if user wants to reconfigure
+      $("#mainUI").hide();
+      $("#configPanel").show();
+    }
+  },
+  {
+    // Context menu item handlers
+    'refreshNow': () => {
+      refreshData();  // trigger your refresh immediately
+    }
+  }
+).then(() => {
+  populateDatasources();
+});
+
 
 </script>
 </body>
 </html>
+
