@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest manifest-version="0.1" xmlns="http://www.tableau.com/xml/extension_manifest">
+  <dashboard-extension id="com.prosperitas.extensions.autorefresh" extension-version="1.0.0">
+    <default-locale>en_US</default-locale>
+    <name>AutoRefresh</name>
+    <description>Auto-refresh Tableau visualizations on a custom interval.</description>
+    <author name="Prosperitas" email="support@example.com" website="https://prosperitasservices.com/" />
+    <min-api-version>1.2</min-api-version>
+    <source-location>
+      <url>http://localhost:8000/index.html</url>
+    </source-location>
+    <icon>iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAABTElEQVR4Xu3WsQ0CMQwE0P7/tcmZGJ6HEQAJIrEmi2aLZrG-k/N+/k/wIBAaGJIG3bkCg36WBBAyk7EGI0aesh0CMzuldwzCKB17BM-KyIkXpoAkfRMC4pA04AAQoJytAFvUCasZZNQEaECcBw1swhAgpDwAUWwT2045YHIkAssMAIE4RquFuAdgXKChZAgoix8DK9HZZiREAlu3YXjIBKsBA5VyWAEAAEYDWuw204SCEKIWICRGmAYpWDBpuMNggCa08tkOnDLwRhBEjDJjABKNGHhHgZj1QUlGRKp06QgYkAVq0YJDGeADKEfDD4urqQQGAdEyfCDkmgRICK47AAW7D84CyoGBGDNWkcHCbWmhvlA2Is9CdoAwx-CD7L7HMlA8pGg5XIl+UkigG0FgCKv+9PdZQ3A8weMTKmC4uVMAAAAAElFTkSuQmCC</icon>
+    <permissions>
+      <permission>full data</permission>
+    </permissions>
+  </dashboard-extension>
+</manifest>
