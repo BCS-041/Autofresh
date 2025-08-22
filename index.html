@@ -5,7 +5,13 @@
   <title>AutoRefresh Extension</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <!-- Countdown plugin: try CDN, fallback to local -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.countdown360/1.2.3/jquery.countdown360.min.js"></script>
+  <script>
+    if (typeof jQuery.fn.countdown360 === "undefined") {
+      document.write('<script src="jquery.countdown360.min.js"><\/script>');
+    }
+  </script>
   <script src="https://extensions.tableauusercontent.com/resources/tableau.extensions.1.latest.min.js"></script>
   <style>
     body {
@@ -140,31 +146,33 @@
 
   function populateDatasources() {
     const dashboard = tableau.extensions.dashboardContent.dashboard;
-    const datasources = dashboard.dataSources;
-    const $dsSelect = $("#datasourceSelect");
-    $dsSelect.empty();
-    datasources.forEach(ds => {
-      $dsSelect.append(new Option(ds.name, ds.id));
+    dashboard.getDataSourcesAsync().then(datasources => {
+      const $dsSelect = $("#datasourceSelect");
+      $dsSelect.empty();
+      datasources.forEach(ds => {
+        $dsSelect.append(new Option(ds.name, ds.id));
+      });
+      if (datasources.length > 0) {
+        selectedDatasource = datasources[0];
+      }
     });
-    if (datasources.length > 0) {
-      selectedDatasource = datasources[0];
-    }
   }
 
   $("#startButton").on("click", () => {
     const dsId = $("#datasourceSelect").val();
-    const dashboardDatasources = tableau.extensions.dashboardContent.dashboard.dataSources;
-    selectedDatasource = dashboardDatasources.find(ds => ds.id === dsId);
-    refreshInterval = parseInt($("#intervalSelect").val(), 10);
+    tableau.extensions.dashboardContent.dashboard.getDataSourcesAsync().then(dashboardDatasources => {
+      selectedDatasource = dashboardDatasources.find(ds => ds.id === dsId);
+      refreshInterval = parseInt($("#intervalSelect").val(), 10);
 
-    // Show main UI
-    $("#configPanel").hide();
-    $("#mainUI").show();
+      // Show main UI
+      $("#configPanel").hide();
+      $("#mainUI").show();
 
-    updateNextRefresh();
-    updateLastRefresh();
-    populateSelectedDatasourceInfo();
-    initCountdown();
+      updateNextRefresh();
+      updateLastRefresh();
+      populateSelectedDatasourceInfo();
+      initCountdown();
+    });
   });
 
   function populateSelectedDatasourceInfo() {
@@ -173,27 +181,25 @@
     }
   }
 
+  // Initialize with menu handlers
   tableau.extensions.initializeAsync(
-  {
-    // Handler for the configure menu item
-    'configure': () => {
-      // Show your config panel again if user wants to reconfigure
-      $("#mainUI").hide();
-      $("#configPanel").show();
+    {
+      // Config menu handler
+      'configure': () => {
+        $("#mainUI").hide();
+        $("#configPanel").show();
+      }
+    },
+    {
+      // Context menu handler
+      'refreshNow': () => {
+        refreshData();
+      }
     }
-  },
-  {
-    // Context menu item handlers
-    'refreshNow': () => {
-      refreshData();  // trigger your refresh immediately
-    }
-  }
-).then(() => {
-  populateDatasources();
-});
-
+  ).then(() => {
+    populateDatasources();
+  });
 
 </script>
 </body>
 </html>
-
