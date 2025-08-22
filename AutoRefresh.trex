@@ -4,12 +4,18 @@
     <default-locale>en_US</default-locale>
     <name>AutoRefresh</name>
     <description>Auto-refresh Tableau datasources on a custom interval</description>
-    <author name="Your Name" email="you@email.com"/>
-    <url>https://bcs-041.github.io/Autofresh.github.io/index.html</url>
 
-    <menu-items>
-      <menu-item id="configure" label="Configure AutoRefresh"/>
-      <menu-item id="refreshNow" label="Refresh Now"/>
-    </menu-items>
+    <author 
+      name="Your Name" 
+      email="you@email.com" 
+      website="https://github.com/bcs-041/Autofresh.github.io" />
+
+    <source-location>
+      <url>https://bcs-041.github.io/Autofresh.github.io/index.html</url>
+    </source-location>
+
+    <configure-context-menu-item label="Configure AutoRefresh" />
+
+    <min-api-version>1.3</min-api-version>
   </dashboard-extension>
 </manifest>
