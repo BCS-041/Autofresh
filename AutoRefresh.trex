@@ -1,40 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest 
-  manifest-version="0.1" 
-  xmlns="http://www.tableau.com/xml/extension_manifest"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="https://tableau.github.io/extensions-api/schema/extension-manifest.xsd">
+<manifest manifest-version="0.1" 
+          xmlns="http://www.tableau.com/2018/extension/manifest"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.tableau.com/2018/extension/manifest 
+                              https://tableau.github.io/extensions-api/schema/extension-manifest.xsd">
 
   <dashboard-extension id="com.prosperitas.auto-refresh-timer" extension-version="1.2.0">
     <default-locale>en_US</default-locale>
     <name resource-id="name"/>
     <description resource-id="description"/>
-    <author 
-      name="Prosperitas Services LLC" 
-      email="info@prosperitasmail.com" 
-      organization="Prosperitas" 
-      website="https://prosperitasservices.com/" />
+    <author name="Prosperitas Services LLC" 
+            email="info@prosperitasmail.com" 
+            organization="Prosperitas" 
+            website="https://prosperitasservices.com/"/>
     <min-api-version>1.1</min-api-version>
     <source-location>
-      <url>https://bcs-041.github.io/Autofresh/AutoRefresh.html?v=1.2</url>
+      <url>https://bcs-041.github.io/Dummy-Extension/AutoRefresh.html?v=1.2</url>
     </source-location>
-    <icon>iVBORw0KGgoAAAANSUhEUgAAAPkAAABYCAYAAAA3D1HbAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkMyMTA1RjcxQThCNDExRTJBMzg1RTAxNzY4QzkwNTdDIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkMyMTA1RjcyQThCNDExRTJBMzg1RTAxNzY4QzkwNTdDIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QzIxMDVGNkZBOEI0MTFFMkEzODVFMDE3NjhDOTA1N0MiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QzIxMDVGNzBBOEI0MTFFMkEzODVFMDE3NjhDOTA1N0MiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7MvYcyAAAzOElEQVR42ux9B5xdVbX+3ndKZpJJJiG9QUCagiDKE0QRFQERULHgA7EANuzl2RVRAcX29ClF6YpiQwEbWBALXZqCESISkgAhPZlkJply9399d3977rr7nnZnwvvr+52d3869c+45u6y+1l57H+ucM2UpS1n+75ZKCYKylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLye......[TRUNCATED FOR BREVITY]......CQoJChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZChkKGQoZCh......[TRUNCATED]......</icon>
+
+    <!-- ✅ PERMISSIONS: Must use <permission> elements with valid id values -->
     <permissions>
-      <permission id="refresh-data-source"/>
-      <permission id="settings"/>
+      <permission>refresh-data-source</permission>
+      <permission>settings</permission>
     </permissions>
-    <context-menu>
-      <configure-context-menu-item />
-    </context-menu>
+
+    <!-- ✅ CONFIGURATION: Must be inside <dashboard-extension> and use correct structure -->
     <configuration>
       <dialog>
-        <url>https://bcs-041.github.io/Dummy-Extension/AutoRefreshDialog.html?v=1.2</url>
+        <url>https://bcs-041.github.io/Autofresh/AutoRefreshDialog.html?v=1.2</url>
         <initial-size>
           <width>500</width>
           <height>500</height>
         </initial-size>
       </dialog>
     </configuration>
+
+    <!-- ✅ CONTEXT MENU: Optional but recommended -->
+    <context-menu>
+      <configure-context-menu-item/>
+    </context-menu>
+
+    <!-- ✅ ICON: Optional — remove if causing issues -->
+    <!--
+    <icon>iVBORw0KGgoAAAANSUhEUgAAAPkAAABYCAYAAAA3D1HbAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkMyMTA1RjcxQThCNDExRTJBMzg1RTAxNzY4QzkwNTdDIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkMyMTA1RjcyQThCNDExRTJBMzg1RTAxNzY4QzkwNTdDIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QzIxMDVGNkZBOEI0MTFFMkEzODVFMDE3NjhDOTA1N0MiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QzIxMDVGNzBBOEI0MTFFMkEzODVFMDE3NjhDOTA1N0MiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7MvYcyAAAzOElEQVR42ux9B5xdVbX+3ndKZpJJJiG9QUCagiDKE0QRFQERULHgA7EANuzl2RVRAcX29ClF6YpiQwEbWBALXZqCESISkgAhPZlkJply9399d3977rr7nnZnwvvr+52d3869c+45u6y+1l57H+ucM2UpS1n+75ZKCYKylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlLyeRlKUtZSiYvS1nKUjJ5WcpSlpLJy1KWspRMXpaylKVk8rKUpSwlk5elLGUpmbwsZSlL......[TRUNCATED]......</icon>
+    -->
   </dashboard-extension>
 
   <resources>
