@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest manifest-version="0.1" xmlns="http://www.tableau.com/2018/extension/manifest">
-  <dashboard-extension id="com.yourcompany.auto-refresh-timer" extension-version="1.2.0">
+  <dashboard-extension id="com.prosperitas.auto-refresh-timer" extension-version="1.2.0">
     <default-locale>en_US</default-locale>
     <name resource-id="name"/>
     <description resource-id="description"/>
-    <author name="Your Company" email="contact@example.com" website="https://example.com" />
+    <author name="Prosperitas" email="info@prosperitasmail.com" website="https://prosperitasservices.com/" />
     <min-api-version>1.0</min-api-version>
     <source-location>
-      <url>https://YOUR-SERVER.com/auto-refresh/AutoRefresh.html</url>
+      <url>https://bcs-041.github.io/Autofresh/AutoRefresh.html</url>
     </source-location>
     <icon></icon>
     <permissions>
@@ -16,7 +16,7 @@
     </permissions>
     <configuration>
       <dialog>
-        <url>https://YOUR-SERVER.com/auto-refresh/AutoRefreshDialog.html</url>
+        <url>https://bcs-041.github.io/Autofresh/AutoRefreshDialog.html</url>
         <initial-size>
           <width>500</width>
           <height>500</height>
@@ -33,3 +33,4 @@
     </resource>
   </resources>
 </manifest>
+
