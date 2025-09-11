@@ -1,72 +1,64 @@
 'use strict';
-
 (function () {
   const SETTINGS_KEY_DATASOURCES = 'selectedDatasources';
   const SETTINGS_KEY_INTERVAL = 'intervalkey';
   const SETTINGS_KEY_CONFIGURED = 'configured';
 
-  const DEFAULT_INTERVAL = 30;
   let selectedDatasources = [];
 
   $(document).ready(function () {
     tableau.extensions.initializeDialogAsync().then((openPayload) => {
-      // Set interval input
+      // Load interval from settings, payload, or fallback to 60
       const savedInterval = tableau.extensions.settings.get(SETTINGS_KEY_INTERVAL);
-      const initialInterval = openPayload && !isNaN(parseInt(openPayload, 10))
-        ? parseInt(openPayload, 10)
-        : (savedInterval || DEFAULT_INTERVAL);
+      const intervalValue = savedInterval || openPayload || 60;
+      $('#interval').val(intervalValue);
 
-      $('#interval').val(initialInterval);
-
-      // Load previously selected datasources
-      selectedDatasources = loadSelectedDatasources();
-
-      // Collect datasources across worksheets
+      // Load datasources across all worksheets
       const dashboard = tableau.extensions.dashboardContent.dashboard;
-      const seenDatasourceIds = new Set();
-      let datasourceList = [];
+      selectedDatasources = getSavedDatasources();
 
-      const promises = dashboard.worksheets.map(worksheet =>
-        worksheet.getDataSourcesAsync().then(datasources => {
+      const seen = new Set();
+      const promises = dashboard.worksheets.map(ws =>
+        ws.getDataSourcesAsync().then(datasources => {
           datasources.forEach(ds => {
-            if (!seenDatasourceIds.has(ds.id)) {
-              seenDatasourceIds.add(ds.id);
-              datasourceList.push(ds);
+            if (!seen.has(ds.id)) {
+              seen.add(ds.id);
+              addDatasourceToUI(ds, selectedDatasources.includes(ds.id));
             }
           });
         })
       );
 
       Promise.all(promises).then(() => {
-        // Sort alphabetically
-        datasourceList.sort((a, b) => a.name.localeCompare(b.name));
-        datasourceList.forEach(ds => {
-          addDatasourceToUI(ds, selectedDatasources.includes(ds.id));
-        });
+        console.log("✅ Datasources listed in config dialog");
       });
 
-      // Save & Close
+      // Close dialog handler
       $('#closeButton').on('click', saveAndClose);
     });
   });
 
-  function loadSelectedDatasources() {
+  // ---------------------------
+  // Helpers
+  // ---------------------------
+  function getSavedDatasources() {
     const settings = tableau.extensions.settings.getAll();
-    if (settings[SETTINGS_KEY_DATASOURCES]) {
-      try {
-        return JSON.parse(settings[SETTINGS_KEY_DATASOURCES]);
-      } catch {
-        return [];
-      }
+    return settings[SETTINGS_KEY_DATASOURCES]
+      ? JSON.parse(settings[SETTINGS_KEY_DATASOURCES])
+      : [];
+  }
+
+  function toggleDatasource(id) {
+    const idx = selectedDatasources.indexOf(id);
+    if (idx === -1) {
+      selectedDatasources.push(id);
+    } else {
+      selectedDatasources.splice(idx, 1);
     }
-    return [];
   }
 
   function addDatasourceToUI(datasource, isActive) {
-    const container = $('<div />', {
-      class: 'datasource-item',
-      css: { marginBottom: '8px' }
-    });
+    const container = $('<div />').css({ marginBottom: '8px' });
 
     const checkbox = $('<input />', {
       type: 'checkbox',
@@ -84,37 +76,32 @@
     $('#datasources').append(container);
   }
 
-  function toggleDatasource(id) {
-    const index = selectedDatasources.indexOf(id);
-    if (index === -1) {
-      selectedDatasources.push(id);
-    } else {
-      selectedDatasources.splice(index, 1);
-    }
-  }
-
+  // ---------------------------
+  // Save and close dialog
+  // ---------------------------
   function saveAndClose() {
-    const intervalValue = $('#interval').val().trim();
-    const intervalNum = parseInt(intervalValue, 10);
+    const interval = $('#interval').val().trim();
+    const intervalNum = parseInt(interval, 10);
 
     if (isNaN(intervalNum) || intervalNum < 15 || intervalNum > 3600) {
-      $('#interval').css('border', '1px solid red').focus();
       alert("Please enter a valid interval between 15 and 3600 seconds.");
+      $('#interval').focus();
       return;
     }
 
-    // Save settings
     tableau.extensions.settings.set(
       SETTINGS_KEY_DATASOURCES,
-      JSON.stringify([...new Set(selectedDatasources)]) // remove duplicates
+      JSON.stringify([...new Set(selectedDatasources)]) // dedupe
     );
-    tableau.extensions.settings.set(SETTINGS_KEY_INTERVAL, intervalValue);
+    tableau.extensions.settings.set(SETTINGS_KEY_INTERVAL, intervalNum.toString());
     tableau.extensions.settings.set(SETTINGS_KEY_CONFIGURED, "1");
 
     tableau.extensions.settings.saveAsync()
-      .then(() => tableau.extensions.ui.closeDialog(intervalValue))
+      .then(() => {
+        tableau.extensions.ui.closeDialog(intervalNum.toString());
+      })
       .catch(err => {
-        console.error("Failed to save settings:", err);
+        console.error("❌ Failed to save settings:", err);
         alert("Error saving configuration. Please try again.");
       });
   }
