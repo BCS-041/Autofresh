@@ -1,43 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Auto Refresh Timer</title>
+
+  <!-- Dependencies -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tableau.extensions.1.latest.min.js"></script>
   <script src="./AutoRefresh.js"></script>
 
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f8f9fa;
-      color: #333;
-      margin: 0;
-      padding: 0;
+    :root {
+      --primary: #0d6efd;
+      --muted: #6c757d;
     }
 
-    .container {
-      max-width: 400px;
-      margin: 40px auto;
-      padding: 30px;
-      background-color: #fff;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: transparent;
+      color: #333;
+      margin: 0;
+      padding: 20px;
       text-align: center;
     }
 
+    /* Timer Circle */
     #timerContainer {
       display: inline-block;
       position: relative;
-      margin: 20px 0;
+      margin: 25px 0;
+      opacity: 1;
+      transition: opacity 0.5s ease; /* Smooth fade */
     }
 
     #timerRing circle {
-      transition: stroke-dashoffset 0.3s ease;
+      transition: stroke-dashoffset 1s linear;
     }
 
     #timerText {
@@ -45,46 +45,86 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-weight: bold;
-      font-size: 24px;
-      color: #495057;
+      font-weight: 600;
+      font-size: 26px;
+      color: var(--muted);
       font-family: 'Courier New', monospace;
-      width: 60px;
+      width: 70px;
+      text-align: center;
     }
 
-    #toggleRefresh {
-      margin-top: 10px;
-      padding: 8px 20px;
-      font-size: 14px;
-    }
-
+    /* Inactive State */
     #inactive {
-      margin-top: 30px;
-    }
-
-    #active, #inactive {
-      transition: all 0.3s ease;
+      margin-top: 25px;
+      color: var(--muted);
+      font-size: 15px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div id="active" style="display: none;">
-      <div id="timerContainer">
-        <svg id="timerRing" width="100" height="100" viewBox="0 0 60 60">
-          <circle cx="30" cy="30" r="25" fill="none" stroke="#e9ecef" stroke-width="4"></circle>
-          <circle cx="30" cy="30" r="25" fill="none" stroke="#007bff" stroke-width="4"
-                  stroke-dasharray="157.08" stroke-dashoffset="157.08" transform="rotate(-90 30 30)"
-                  id="progressRing"></circle>
-        </svg>
-        <div id="timerText">30</div>
-      </div>
-      <button id="toggleRefresh" class="btn btn-sm btn-default">⏸️ Pause</button>
-    </div>
-
-    <div id="inactive">
-      <p>Click ⚙️ to configure auto-refresh timer.</p>
+  <!-- Active Timer -->
+  <div id="active" style="display: none;">
+    <div id="timerContainer">
+      <svg id="timerRing" width="120" height="120" viewBox="0 0 60 60">
+        <circle cx="30" cy="30" r="25" fill="none" stroke="#e9ecef" stroke-width="4"></circle>
+        <circle cx="30" cy="30" r="25" fill="none" stroke="var(--primary)" stroke-width="4"
+                stroke-dasharray="157.08" stroke-dashoffset="157.08" transform="rotate(-90 30 30)"
+                id="progressRing"></circle>
+      </svg>
+      <div id="timerText">30</div>
     </div>
   </div>
+
+  <!-- Inactive State -->
+  <div id="inactive">
+    <p>⚙️ Click configure to start auto-refresh timer.</p>
+  </div>
+
+  <script>
+  let countdown;
+  const r = 25;
+  const circumference = 2 * Math.PI * r;
+  const progressRing = document.getElementById("progressRing");
+  const timerText = document.getElementById("timerText");
+  const timerContainer = document.getElementById("timerContainer");
+
+  progressRing.style.strokeDasharray = circumference;
+  progressRing.style.strokeDashoffset = circumference;
+
+  window.startTimer = function(duration) {
+    clearInterval(countdown);
+    $("#inactive").hide();
+    $("#active").fadeIn();
+
+    let timeLeft = duration;
+    updateDisplay();
+
+    countdown = setInterval(() => {
+      timeLeft--;
+      if (timeLeft < 0) {
+        clearInterval(countdown);
+
+        // Smooth fade reset
+        timerContainer.style.opacity = 0;
+        setTimeout(() => {
+          window.startTimer(duration); // restart
+          timerContainer.style.opacity = 1;
+        }, 600);
+      } else {
+        updateDisplay();
+      }
+    }, 1000);
+
+    function updateDisplay() {
+      timerText.textContent = timeLeft;
+      const progress = (timeLeft / duration) * circumference;
+      progressRing.style.strokeDashoffset = progress;
+
+      // optional warning color
+      timerText.style.color = timeLeft <= 5 ? "#dc3545" : "#6c757d";
+    }
+  };
+</script>
+
 </body>
 </html>
