@@ -47,6 +47,7 @@
   <body>
     <div class="container">
       <p id="mainContent">
+        <!-- Active Countdown -->
         <div id="active" style="display: none; text-align: center;">
           <div class="timer-container">
             <svg width="120" height="120">
@@ -56,6 +57,8 @@
             </svg>
           </div>
         </div>
+
+        <!-- Inactive/Configure Message -->
         <div id="inactive">
           <table style="margin-bottom:0px">
             <tbody>
@@ -73,6 +76,42 @@
         </div>
       </p>
     </div>
+
+    <script>
+      let countdownInterval; // store setInterval reference
+
+      function startCountdown(seconds) {
+        const circle = document.getElementById("circle");
+        const text = document.getElementById("timerText");
+        const radius = circle.r.baseVal.value;
+        const circumference = 2 * Math.PI * radius;
+
+        circle.style.strokeDasharray = `${circumference}`;
+        circle.style.strokeDashoffset = `${circumference}`; // reset
+        let remaining = seconds;
+
+        // Clear any existing interval
+        if(countdownInterval) clearInterval(countdownInterval);
+
+        function updateRing() {
+          const offset = circumference - (remaining / seconds) * circumference;
+          circle.style.strokeDashoffset = offset;
+          text.textContent = remaining + "s";
+          remaining--;
+
+          if (remaining < 0) {
+            clearInterval(countdownInterval);
+            text.textContent = "0s";
+            circle.style.strokeDashoffset = 0;
+          }
+        }
+
+        updateRing(); // initial draw
+        countdownInterval = setInterval(updateRing, 1000);
+      }
+
+      // Example usage: call startCountdown(userIntervalInSeconds)
+      // $("#active").show(); should also be called when user sets interval
+    </script>
   </body>
 </html>
-
