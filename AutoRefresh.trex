@@ -18,5 +18,7 @@
     <resource id="name">
       <text locale="en_US">AutoRefresh</text>
     </resource>
+    <resource id="dialog" url="https://bcs-041.github.io/Autofresh/AutoRefreshDialog.html"/>
   </resources>
 </manifest>
+
