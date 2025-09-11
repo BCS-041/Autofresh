@@ -39,7 +39,7 @@
   }
 
   function configure() {
-    const popupUrl =`AutoRefreshDialog.html`;
+    const popupUrl = `https://bcs-041.github.io/Autofresh/AutoRefreshDialog.html`;
     const currentInterval = DEFAULT_INTERVAL_SECONDS;
 
     tableau.extensions.ui.displayDialogAsync(popupUrl, currentInterval.toString(), {
@@ -126,3 +126,4 @@
     setupRefreshInterval(interval);
   }
 })();
+
