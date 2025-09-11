@@ -5,7 +5,6 @@
   let refreshInterval = null;
   let activeDatasourceIdList = [];
   let uniqueDataSources = [];
-  let isPaused = false;
 
   $(document).ready(function () {
     tableau.extensions.initializeAsync({ configure }).then(() => {
@@ -14,6 +13,7 @@
         updateFromSettings(event.newSettings);
       });
 
+      // If not configured yet → open dialog
       if (tableau.extensions.settings.get("configured") !== "1") {
         configure();
       }
@@ -27,9 +27,11 @@
       activeDatasourceIdList = JSON.parse(settings.selectedDatasources);
     }
 
-    const interval = settings.intervalkey ? parseInt(settings.intervalkey, 10) : DEFAULT_INTERVAL_SECONDS;
+    const interval = settings.intervalkey
+      ? parseInt(settings.intervalkey, 10)
+      : DEFAULT_INTERVAL_SECONDS;
 
-    if (settings.selectedDatasources) {
+    if (activeDatasourceIdList.length > 0) {
       $('#inactive').hide();
       $('#active').show();
       setupRefreshInterval(interval);
@@ -44,16 +46,16 @@
       height: 500,
       width: 500
     })
-      .then((newInterval) => {
-        $('#inactive').hide();
-        $('#active').show();
-        setupRefreshInterval(parseInt(newInterval, 10));
-      })
-      .catch((error) => {
-        if (error.errorCode !== tableau.ErrorCodes.DialogClosedByUser) {
-          console.error("Dialog error:", error.message);
-        }
-      });
+    .then((newInterval) => {
+      $('#inactive').hide();
+      $('#active').show();
+      setupRefreshInterval(parseInt(newInterval, 10));
+    })
+    .catch((error) => {
+      if (error.errorCode !== tableau.ErrorCodes.DialogClosedByUser) {
+        console.error("Dialog error:", error.message);
+      }
+    });
   }
 
   function setupRefreshInterval(intervalSeconds) {
@@ -61,9 +63,10 @@
       clearTimeout(refreshInterval);
     }
 
-    if (isPaused) return;
-
-    startCircularTimer(intervalSeconds);
+    // Start circular timer in UI
+    if (typeof window.startTimer === "function") {
+      window.startTimer(intervalSeconds);
+    }
 
     function collectUniqueDataSources() {
       const dashboard = tableau.extensions.dashboardContent.dashboard;
@@ -86,7 +89,7 @@
 
     function executeRefresh() {
       if (uniqueDataSources.length === 0) {
-        console.warn("No matching datasources to refresh.");
+        console.warn("⚠️ No matching datasources to refresh.");
         scheduleNext();
         return;
       }
@@ -95,19 +98,17 @@
 
       Promise.all(promises)
         .then(() => {
-          console.log(`✅ Refreshed ${uniqueDataSources.length} datasources.`);
+          console.log(`✅ Refreshed ${uniqueDataSources.length} datasource(s).`);
           scheduleNext();
         })
         .catch(err => {
-          console.error("Refresh failed:", err);
+          console.error("❌ Refresh failed:", err);
           scheduleNext();
         });
     }
 
     function scheduleNext() {
-      if (!isPaused) {
-        refreshInterval = setTimeout(executeRefresh, intervalSeconds * 1000);
-      }
+      refreshInterval = setTimeout(executeRefresh, intervalSeconds * 1000);
     }
 
     collectUniqueDataSources().then(() => {
@@ -115,60 +116,13 @@
     });
   }
 
-  function startCircularTimer(totalSeconds) {
-    const timerRing = document.getElementById('progressRing');
-    const timerText = document.getElementById('timerText');
-    const circumference = 2 * Math.PI * 25;
-
-    let secondsLeft = totalSeconds;
-
-    timerText.textContent = secondsLeft;
-    timerRing.style.strokeDasharray = `${circumference} ${circumference}`;
-    timerRing.style.strokeDashoffset = circumference;
-
-    const interval = setInterval(() => {
-      secondsLeft--;
-
-      timerText.textContent = secondsLeft;
-
-      const offset = (secondsLeft / totalSeconds) * circumference;
-      timerRing.style.strokeDashoffset = offset;
-
-      if (secondsLeft <= 5) {
-        timerText.style.color = '#dc3545';
-      } else {
-        timerText.style.color = '#495057';
-      }
-
-      if (secondsLeft <= 0) {
-        clearInterval(interval);
-        timerText.textContent = totalSeconds;
-        timerText.style.color = '#495057';
-        timerRing.style.strokeDashoffset = circumference;
-      }
-    }, 1000);
-  }
-
   function updateFromSettings(settings) {
     if (settings.selectedDatasources) {
       activeDatasourceIdList = JSON.parse(settings.selectedDatasources);
     }
-    const currentInterval = parseInt($('#interval').text?.(), 10) || DEFAULT_INTERVAL_SECONDS;
-    setupRefreshInterval(currentInterval);
+    const interval = settings.intervalkey
+      ? parseInt(settings.intervalkey, 10)
+      : DEFAULT_INTERVAL_SECONDS;
+    setupRefreshInterval(interval);
   }
-
-  $(document).on('click', '#toggleRefresh', function () {
-    isPaused = !isPaused;
-    $(this).text(isPaused ? '▶️ Resume' : '⏸️ Pause');
-
-    if (isPaused) {
-      if (refreshInterval) {
-        clearTimeout(refreshInterval);
-        refreshInterval = null;
-      }
-    } else {
-      const interval = DEFAULT_INTERVAL_SECONDS;
-      setupRefreshInterval(interval);
-    }
-  });
 })();
