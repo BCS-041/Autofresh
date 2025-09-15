@@ -1,11 +1,11 @@
 'use strict';
 (function () {
-  const DEFAULT_INTERVAL_SECONDS = 60;  // default 1 min
+  const DEFAULT_INTERVAL_SECONDS = 60;
   const SETTINGS_KEY_DATASOURCES = 'selectedDatasources';
   const SETTINGS_KEY_INTERVAL = 'intervalkey';
   const SETTINGS_KEY_CONFIGURED = 'configured';
 
-  let refreshInterval = null;
+  let refreshTimeout = null;
   let activeDatasourceIdList = [];
   let uniqueDataSources = [];
 
@@ -20,7 +20,6 @@
         }
       );
 
-      // If never configured → open dialog
       if (tableau.extensions.settings.get(SETTINGS_KEY_CONFIGURED) !== "1") {
         configure();
       }
@@ -44,7 +43,7 @@
     if (activeDatasourceIdList.length > 0) {
       $('#inactive').hide();
       $('#active').show();
-      setupRefreshInterval(interval);
+      setupRefreshLogic(interval);
     }
   }
 
@@ -52,7 +51,7 @@
   // Configure dialog
   // ---------------------------
   function configure() {
-    const popupUrl = `${window.location.origin}/AutoRefreshDialog.html`; // works with GitHub Pages hosting
+    const popupUrl = `${window.location.origin}/AutoRefreshDialog.html`;
     const currentInterval = tableau.extensions.settings.get(SETTINGS_KEY_INTERVAL) || DEFAULT_INTERVAL_SECONDS;
 
     console.log("Opening configuration dialog:", popupUrl);
@@ -68,7 +67,7 @@
       $('#inactive').hide();
       $('#active').show();
 
-      setupRefreshInterval(parseInt(newInterval, 10));
+      setupRefreshLogic(parseInt(newInterval, 10));
     })
     .catch((error) => {
       if (error.errorCode === tableau.ErrorCodes.DialogClosedByUser) {
@@ -80,16 +79,11 @@
   }
 
   // ---------------------------
-  // Setup refresh interval
+  // Setup the refresh logic
   // ---------------------------
-  function setupRefreshInterval(intervalSeconds) {
-    if (refreshInterval) {
-      clearTimeout(refreshInterval);
-    }
-
-    // Start circular timer in UI if available
-    if (typeof window.startTimer === "function") {
-      window.startTimer(intervalSeconds);
+  function setupRefreshLogic(intervalSeconds) {
+    if (refreshTimeout) {
+      clearTimeout(refreshTimeout);
     }
 
     function collectUniqueDataSources() {
@@ -107,36 +101,44 @@
           });
         })
       );
-
       return Promise.all(promises);
     }
 
     function executeRefresh() {
       if (uniqueDataSources.length === 0) {
-        console.warn("⚠️ No matching datasources to refresh.");
-        scheduleNext();
+        console.warn("⚠️ No matching datasources to refresh. Scheduling next.");
+        scheduleNextRefresh();
         return;
       }
+
+      console.log(`Starting refresh for ${uniqueDataSources.length} datasource(s).`);
 
       const promises = uniqueDataSources.map((ds) => ds.refreshAsync());
 
       Promise.all(promises)
         .then(() => {
           console.log(`✅ Refreshed ${uniqueDataSources.length} datasource(s).`);
-          scheduleNext();
+          scheduleNextRefresh();
         })
         .catch((err) => {
           console.error("❌ Refresh failed:", err);
-          scheduleNext();
+          scheduleNextRefresh();
         });
     }
 
-    function scheduleNext() {
-      refreshInterval = setTimeout(executeRefresh, intervalSeconds * 1000);
+    function scheduleNextRefresh() {
+      // Start the visual timer countdown
+      if (typeof window.startTimer === "function") {
+        window.startTimer(intervalSeconds);
+      }
+      
+      // Schedule the data refresh to happen after the interval
+      refreshTimeout = setTimeout(executeRefresh, intervalSeconds * 1000);
     }
 
     collectUniqueDataSources().then(() => {
-      executeRefresh();
+      // Begin the process by scheduling the first refresh
+      scheduleNextRefresh();
     });
   }
 
@@ -152,6 +154,18 @@
       ? parseInt(settings[SETTINGS_KEY_INTERVAL], 10)
       : DEFAULT_INTERVAL_SECONDS;
 
-    setupRefreshInterval(interval);
+    if (activeDatasourceIdList.length > 0) {
+      $('#inactive').hide();
+      $('#active').show();
+      setupRefreshLogic(interval);
+    } else {
+      // Stop the timer if no datasources are selected
+      if (refreshTimeout) {
+        clearTimeout(refreshTimeout);
+      }
+      // Hide the timer and show the inactive message
+      $('#active').hide();
+      $('#inactive').show();
+    }
   }
 })();
