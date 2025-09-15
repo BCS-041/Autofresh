@@ -8,12 +8,10 @@
 
   $(document).ready(function () {
     tableau.extensions.initializeDialogAsync().then((openPayload) => {
-      // Load interval from settings, payload, or fallback to 60
       const savedInterval = tableau.extensions.settings.get(SETTINGS_KEY_INTERVAL);
       const intervalValue = savedInterval || openPayload || 60;
       $('#interval').val(intervalValue);
 
-      // Load datasources across all worksheets
       const dashboard = tableau.extensions.dashboardContent.dashboard;
       selectedDatasources = getSavedDatasources();
 
@@ -33,7 +31,6 @@
         console.log("✅ Datasources listed in config dialog");
       });
 
-      // Close dialog handler
       $('#closeButton').on('click', saveAndClose);
     });
   });
@@ -58,7 +55,7 @@
   }
 
   function addDatasourceToUI(datasource, isActive) {
-    const container = $('<div />').css({ marginBottom: '8px' });
+    const container = $('<div />');
 
     const checkbox = $('<input />', {
       type: 'checkbox',
@@ -91,7 +88,7 @@
 
     tableau.extensions.settings.set(
       SETTINGS_KEY_DATASOURCES,
-      JSON.stringify([...new Set(selectedDatasources)]) // dedupe
+      JSON.stringify([...new Set(selectedDatasources)])
     );
     tableau.extensions.settings.set(SETTINGS_KEY_INTERVAL, intervalNum.toString());
     tableau.extensions.settings.set(SETTINGS_KEY_CONFIGURED, "1");
