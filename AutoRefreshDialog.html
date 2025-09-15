@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Auto Refresh Settings</title>
+    <title>Settings Sample</title>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
     <script src="../../lib/tableau.extensions.1.latest.js"></script>
     <script src="./AutoRefreshDialog.js"></script>
     <style>
@@ -24,32 +24,34 @@
         border-radius: 12px;
         box-shadow: 0 10px 28px rgba(0,0,0,0.08);
         animation: fadeIn 0.4s ease-out;
+        position: relative; /* needed for absolute positioning */
       }
       @keyframes fadeIn {
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
+      }
+      .logo {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 120px; /* adjust size */
+        height: auto;
+      }
+      .content {
+        margin-top: 70px; /* pushes text below logo */
       }
       h4 {
         margin-top: 0;
         font-weight: 600;
         color: #222;
       }
-      p.text-muted {
+      p {
         font-size: 15px;
         margin-bottom: 20px;
       }
       hr {
         margin: 20px 0;
         border-top: 1px solid #e0e0e0;
-      }
-      .logo-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-      }
-      .logo-bar img {
-        max-height: 60px;
       }
       #datasources div {
         margin: 6px 0;
@@ -64,11 +66,6 @@
       #datasources div:hover {
         background: #f9f9ff;
         box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      }
-      #datasources label {
-        margin: 0;
-        font-size: 14px;
-        cursor: pointer;
       }
       #interval {
         max-width: 160px;
@@ -108,29 +105,29 @@
   </head>
   <body>
     <div class="container">
-      <div class="logo-bar">
-        <img src="images.png" alt="Logo Left">
-        <img src="logo.png" alt="Logo Right">
-      </div>
 
-      <h4>Auto Data Source Refresh</h4>
-      <p class="text-muted">
-        Your datasources will auto-refresh at the set interval.
-      </p>
+  <!-- Logo pinned to top-right -->
+  <img src="images.png" alt="Logo" class="logo">
 
-      <hr />
+  <!-- Content starts below logo -->
+  <div class="content">
+    <h4>Auto Data Source Refresh</h4>
+    <p>Your datasource will be refreshed at selected time interval.</p>
+    <hr />
 
-      <h5>Select datasources:</h5>
-      <div id="datasources" class="form-group" style="margin-left: 5px;"></div>
+    <!-- Datasources section -->
+    <h5>Select datasources: </h5>
+    <div id="datasources"></div>
 
-      <h5>Refresh interval (seconds):</h5>
-      <input type="number" id="interval" class="form-control" min="15" max="3600" placeholder="60">
+    <!-- Interval input -->
+    <h5>Refresh interval (seconds):</h5>
+    <input type="number" id="interval" name="quantity" min="15" max="3600">
+    <hr />
 
-      <hr />
+    <!-- Button -->
+    <button id="closeButton">Start</button>
+  </div>
+</div>
 
-      <button id="closeButton">Make Magic Happen</button>
-    </div>
   </body>
 </html>
-
-
