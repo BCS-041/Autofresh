@@ -143,7 +143,7 @@
         const circumference = 2 * Math.PI * radius;
 
         circle.style.strokeDasharray = `${circumference}`;
-        circle.style.strokeDashoffset = "0"; // reset
+        circle.style.strokeDashoffset = `${circumference}`; // start full circle
 
         if (countdownTimeout) cancelAnimationFrame(countdownTimeout);
         if (textTimeout) clearTimeout(textTimeout);
@@ -154,7 +154,7 @@
           const elapsed = (now - startTime) / 1000;
           const remaining = Math.max(seconds - elapsed, 0);
 
-          const offset = circumference - (remaining / seconds) * circumference;
+          const offset = (remaining / seconds) * circumference;
           circle.style.strokeDashoffset = offset;
 
           if (remaining > 0) {
