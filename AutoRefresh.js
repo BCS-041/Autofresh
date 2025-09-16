@@ -118,27 +118,27 @@
       Promise.all(promises)
         .then(() => {
           console.log(`✅ Refreshed ${uniqueDataSources.length} datasource(s).`);
-          scheduleNextRefresh();
+          scheduleNextRefresh();   // <-- (CHANGED) Start timer *after refresh completes*
         })
         .catch((err) => {
           console.error("❌ Refresh failed:", err);
-          scheduleNextRefresh();
+          scheduleNextRefresh();   // <-- (CHANGED) Even on error, restart timer
         });
     }
 
     function scheduleNextRefresh() {
-      // Start the visual timer countdown
+      // ⬇️ (MOVED HERE) Start the visual timer only after refresh finishes
       if (typeof window.startTimer === "function") {
         window.startTimer(intervalSeconds);
       }
-      
-      // Schedule the data refresh to happen after the interval
+
+      // ⬇️ Then schedule the next refresh
       refreshTimeout = setTimeout(executeRefresh, intervalSeconds * 1000);
     }
 
     collectUniqueDataSources().then(() => {
-      // Begin the process by scheduling the first refresh
-      scheduleNextRefresh();
+      // Begin by doing an immediate refresh first
+      executeRefresh();   // <-- (CHANGED) Kick off refresh immediately on load
     });
   }
 
@@ -159,11 +159,9 @@
       $('#active').show();
       setupRefreshLogic(interval);
     } else {
-      // Stop the timer if no datasources are selected
       if (refreshTimeout) {
         clearTimeout(refreshTimeout);
       }
-      // Hide the timer and show the inactive message
       $('#active').hide();
       $('#inactive').show();
     }
