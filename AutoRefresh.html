@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Scheduled Auto Refresh</title>
 
+    <!-- Dependencies -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -13,6 +14,11 @@
     <script src="./AutoRefresh.js"></script>
 
     <style>
+      body {
+        margin: 0;
+        background: #fff;
+      }
+
       .timer-container {
         width: 100vw;
         height: 100vh;
@@ -49,6 +55,7 @@
         dominant-baseline: middle;
         fill: #333;
       }
+
       .fixed-logo {
         position: fixed;
         top: 20px;
@@ -61,6 +68,7 @@
 
   <body>
     <div>
+      <!-- Active Timer -->
       <div id="active" style="display:none; text-align: center;">
         <div class="timer-container">
           <svg class="timer-svg" preserveAspectRatio="xMidYMid meet">
@@ -77,6 +85,7 @@
         </div>
       </div>
 
+      <!-- Inactive State -->
       <div id="inactive" style="text-align: center; font-family: Arial, sans-serif; margin-top: 90px;">
         <img src="images.png" alt="LSL" class="fixed-logo">          
         <p style="margin-top: 20px; font-size: 16px; color: #333;">
@@ -121,19 +130,20 @@
       window.addEventListener("resize", resizeTimer);
       window.addEventListener("load", resizeTimer);
 
-      // This function is now controlled by AutoRefresh.js
+      // Controlled from AutoRefresh.js
       window.startTimer = function(seconds) {
         $("#inactive").hide();
         $("#active").show();
 
         const circle = document.getElementById("circle");
         const text = document.getElementById("timerText");
-        if (!circle || !text) return; // safeguard
+        if (!circle || !text) return;
 
         const radius = circle.r.baseVal.value;
         const circumference = 2 * Math.PI * radius;
 
         circle.style.strokeDasharray = `${circumference}`;
+        circle.style.strokeDashoffset = "0"; // reset
 
         let remaining = seconds;
 
@@ -146,12 +156,11 @@
 
           if (remaining <= 0) {
             clearInterval(countdownInterval);
-            return; // stop cleanly, no extra decrement
-        }
+            return;
+          }
 
           remaining--;
-
-          
+        }
 
         function formatTime(sec) {
           const m = Math.floor(sec / 60);
@@ -165,4 +174,3 @@
     </script>
   </body>
 </html>
-
