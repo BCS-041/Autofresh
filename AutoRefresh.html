@@ -45,7 +45,6 @@
         fill: none;
         stroke: url(#grad);
         stroke-linecap: round;
-        transition: stroke-dashoffset 0.2s linear;
       }
 
       #timerText {
@@ -95,7 +94,8 @@
     </div>
 
     <script>
-      let countdownInterval;
+      let countdownTimeout;
+      let textTimeout;
 
       function resizeTimer() {
         const svg = document.querySelector(".timer-svg");
@@ -130,7 +130,7 @@
       window.addEventListener("resize", resizeTimer);
       window.addEventListener("load", resizeTimer);
 
-      // Controlled from AutoRefresh.js
+      // Smooth countdown controlled by AutoRefresh.js
       window.startTimer = function(seconds) {
         $("#inactive").hide();
         $("#active").show();
@@ -145,21 +145,28 @@
         circle.style.strokeDasharray = `${circumference}`;
         circle.style.strokeDashoffset = "0"; // reset
 
-        let remaining = seconds;
+        if (countdownTimeout) cancelAnimationFrame(countdownTimeout);
+        if (textTimeout) clearTimeout(textTimeout);
 
-        if (countdownInterval) clearInterval(countdownInterval);
+        const startTime = performance.now();
 
-        function updateRing() {
+        function animateRing(now) {
+          const elapsed = (now - startTime) / 1000;
+          const remaining = Math.max(seconds - elapsed, 0);
+
           const offset = circumference - (remaining / seconds) * circumference;
           circle.style.strokeDashoffset = offset;
-          text.textContent = formatTime(remaining);
 
-          if (remaining <= 0) {
-            clearInterval(countdownInterval);
-            return;
+          if (remaining > 0) {
+            countdownTimeout = requestAnimationFrame(animateRing);
           }
+        }
 
-          remaining--;
+        function updateText(sec) {
+          text.textContent = formatTime(sec);
+          if (sec > 0) {
+            textTimeout = setTimeout(() => updateText(sec - 1), 1000);
+          }
         }
 
         function formatTime(sec) {
@@ -168,8 +175,9 @@
           return `${m}:${s.toString().padStart(2, "0")}`;
         }
 
-        updateRing();
-        countdownInterval = setInterval(updateRing, 1000);
+        // Start both animations
+        requestAnimationFrame(animateRing);
+        updateText(seconds);
       };
     </script>
   </body>
