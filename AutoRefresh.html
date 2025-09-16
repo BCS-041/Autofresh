@@ -144,13 +144,14 @@
           circle.style.strokeDashoffset = offset;
           text.textContent = formatTime(remaining);
 
+          if (remaining <= 0) {
+            clearInterval(countdownInterval);
+            return; // stop cleanly, no extra decrement
+        }
+
           remaining--;
 
-          if (remaining < 0) {
-            clearInterval(countdownInterval);
-            // The timer stops here. AutoRefresh.js will restart it after refresh.
-          }
-        }
+          
 
         function formatTime(sec) {
           const m = Math.floor(sec / 60);
@@ -164,3 +165,4 @@
     </script>
   </body>
 </html>
+
