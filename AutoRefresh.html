@@ -1,184 +1,134 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Scheduled Auto Refresh</title>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scheduled Auto Refresh</title>
 
-    <!-- Dependencies -->
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="../../lib/tableau.extensions.1.latest.js"></script>
-    <script src="./AutoRefresh.js"></script>
+  <!-- Dependencies -->
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="../../lib/tableau.extensions.1.latest.js"></script>
+  <script src="./AutoRefresh.js"></script>
 
-    <style>
-      body {
-        margin: 0;
-        background: #fff;
-      }
+  <style>
+    body { margin:0; background:#fff; }
+    .timer-container { width:100vw; height:100vh; display:flex; justify-content:center; align-items:center; overflow:hidden; }
+    svg.timer-svg { width:100%; height:100%; max-width:100%; max-height:100%; transform:rotate(-90deg); }
+    .circle-bg { fill:none; stroke:#eee; }
+    .circle { fill:none; stroke: url(#grad); stroke-linecap:round; }
+    #timerText { font-family:Arial, sans-serif; font-weight:bold; text-anchor:middle; dominant-baseline:middle; fill:#333; }
+    .fixed-logo { position: fixed; top:20px; right:20px; width:120px; height:auto; }
+  </style>
+</head>
 
-      .timer-container {
-        width: 100vw;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-      }
-
-      svg.timer-svg {
-        width: 100%;
-        height: 100%;
-        max-width: 100%;
-        max-height: 100%;
-        transform: rotate(-90deg);
-      }
-
-      .circle-bg {
-        fill: none;
-        stroke: #eee;
-      }
-
-      .circle {
-        fill: none;
-        stroke: url(#grad);
-        stroke-linecap: round;
-      }
-
-      #timerText {
-        font-family: Arial, sans-serif;
-        font-weight: bold;
-        text-anchor: middle;
-        dominant-baseline: middle;
-        fill: #333;
-      }
-
-      .fixed-logo {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        width: 120px;
-        height: auto;
-      }
-    </style>
-  </head>
-
-  <body>
-    <div>
-      <!-- Active Timer -->
-      <div id="active" style="display:none; text-align: center;">
-        <div class="timer-container">
-          <svg class="timer-svg" preserveAspectRatio="xMidYMid meet">
-            <defs>
-              <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#f07923" />
-                <stop offset="100%" stop-color="#ffb347" />
-              </linearGradient>
-            </defs>
-            <circle class="circle-bg"></circle>
-            <circle class="circle" id="circle"></circle>
-            <text id="timerText">--</text>
-          </svg>
-        </div>
-      </div>
-
-      <!-- Inactive State -->
-      <div id="inactive" style="text-align: center; font-family: Arial, sans-serif; margin-top: 90px;">
-        <img src="images.png" alt="LSL" class="fixed-logo">          
-        <p style="margin-top: 20px; font-size: 16px; color: #333;">
-          Configure extension to proceed.
-        </p>
+<body>
+  <div>
+    <!-- Active Timer -->
+    <div id="active" style="display:none; text-align:center;">
+      <div class="timer-container">
+        <svg class="timer-svg" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#f07923" />
+              <stop offset="100%" stop-color="#ffb347" />
+            </linearGradient>
+          </defs>
+          <circle class="circle-bg"></circle>
+          <circle class="circle" id="circle"></circle>
+          <text id="timerText">--</text>
+        </svg>
       </div>
     </div>
 
-    <script>
-      let countdownTimeout;
-      let textTimeout;
+    <!-- Inactive State -->
+    <div id="inactive" style="text-align:center; font-family:Arial,sans-serif; margin-top:90px;">
+      <img src="images.png" alt="LSL" class="fixed-logo">
+      <p style="margin-top:20px; font-size:16px; color:#333;">Configure extension to proceed.</p>
+    </div>
+  </div>
 
-      function resizeTimer() {
-        const svg = document.querySelector(".timer-svg");
-        const text = document.getElementById("timerText");
-        const circle = document.getElementById("circle");
-        const bg = document.querySelector(".circle-bg");
+  <script>
+    let countdownTimeout;
+    let textTimeout;
 
-        if (!svg || !text || !circle || !bg) return;
+    function resizeTimer() {
+      const svg = document.querySelector(".timer-svg");
+      const text = document.getElementById("timerText");
+      const circle = document.getElementById("circle");
+      const bg = document.querySelector(".circle-bg");
+      if (!svg || !text || !circle || !bg) return;
 
-        const box = svg.getBoundingClientRect();
-        const size = Math.min(box.width, box.height);
+      const box = svg.getBoundingClientRect();
+      const size = Math.min(box.width, box.height);
+      const stroke = Math.max(2, size * 0.07);
+      const r = (size / 2) - stroke * 2;
 
-        const stroke = Math.max(2, size * 0.07);
-        const r = (size / 2) - stroke * 2;
+      [circle, bg].forEach(c => {
+        c.setAttribute("r", r);
+        c.setAttribute("cx", size/2);
+        c.setAttribute("cy", size/2);
+        c.setAttribute("stroke-width", stroke);
+      });
 
-        [circle, bg].forEach(c => {
-          c.setAttribute("r", r);
-          c.setAttribute("cx", size / 2);
-          c.setAttribute("cy", size / 2);
-          c.setAttribute("stroke-width", stroke);
-        });
+      text.setAttribute("x", size/2);
+      text.setAttribute("y", size/2);
+      text.setAttribute("font-size", size*0.15);
+      text.setAttribute("transform", `rotate(90, ${size/2}, ${size/2})`);
+      svg.setAttribute("viewBox", `0 0 ${size} ${size}`);
+    }
 
-        text.setAttribute("x", size / 2);
-        text.setAttribute("y", size / 2);
-        text.setAttribute("font-size", size * 0.15);
+    window.addEventListener("resize", resizeTimer);
+    window.addEventListener("load", resizeTimer);
 
-        text.setAttribute("transform", `rotate(90, ${size / 2}, ${size / 2})`);
+    // Smooth countdown synced with refresh
+    window.startTimer = function(seconds) {
+      $("#inactive").hide();
+      $("#active").show();
 
-        svg.setAttribute("viewBox", `0 0 ${size} ${size}`);
+      const circle = document.getElementById("circle");
+      const text = document.getElementById("timerText");
+      if (!circle || !text) return;
+
+      const radius = circle.r.baseVal.value;
+      const circumference = 2 * Math.PI * radius;
+
+      circle.style.strokeDasharray = `${circumference}`;
+      circle.style.strokeDashoffset = `${circumference}`;
+
+      if(countdownTimeout) cancelAnimationFrame(countdownTimeout);
+      if(textTimeout) clearTimeout(textTimeout);
+
+      const startTime = performance.now();
+
+      function animateRing(now){
+        const elapsed = (now - startTime)/1000;
+        const remaining = Math.max(seconds - elapsed,0);
+        circle.style.strokeDashoffset = (remaining/seconds)*circumference;
+
+        if(remaining > 0){
+          countdownTimeout = requestAnimationFrame(animateRing);
+        }
       }
 
-      window.addEventListener("resize", resizeTimer);
-      window.addEventListener("load", resizeTimer);
-
-      // Smooth countdown controlled by AutoRefresh.js
-      window.startTimer = function(seconds) {
-        $("#inactive").hide();
-        $("#active").show();
-
-        const circle = document.getElementById("circle");
-        const text = document.getElementById("timerText");
-        if (!circle || !text) return;
-
-        const radius = circle.r.baseVal.value;
-        const circumference = 2 * Math.PI * radius;
-
-        circle.style.strokeDasharray = `${circumference}`;
-        circle.style.strokeDashoffset = `${circumference}`; // start full circle
-
-        if (countdownTimeout) cancelAnimationFrame(countdownTimeout);
-        if (textTimeout) clearTimeout(textTimeout);
-
-        const startTime = performance.now();
-
-        function animateRing(now) {
-          const elapsed = (now - startTime) / 1000;
-          const remaining = Math.max(seconds - elapsed, 0);
-
-          const offset = (remaining / seconds) * circumference;
-          circle.style.strokeDashoffset = offset;
-
-          if (remaining > 0) {
-            countdownTimeout = requestAnimationFrame(animateRing);
-          }
+      function updateText(sec){
+        text.textContent = formatTime(sec);
+        if(sec > 0){
+          textTimeout = setTimeout(()=>updateText(sec-1),1000);
         }
+      }
 
-        function updateText(sec) {
-          text.textContent = formatTime(sec);
-          if (sec > 0) {
-            textTimeout = setTimeout(() => updateText(sec - 1), 1000);
-          }
-        }
+      function formatTime(sec){
+        const m = Math.floor(sec/60);
+        const s = sec%60;
+        return `${m}:${s.toString().padStart(2,"0")}`;
+      }
 
-        function formatTime(sec) {
-          const m = Math.floor(sec / 60);
-          const s = sec % 60;
-          return `${m}:${s.toString().padStart(2, "0")}`;
-        }
-
-        // Start both animations
-        requestAnimationFrame(animateRing);
-        updateText(seconds);
-      };
-    </script>
-  </body>
+      requestAnimationFrame(animateRing);
+      updateText(seconds);
+    }
+  </script>
+</body>
 </html>
