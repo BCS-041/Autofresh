@@ -21,6 +21,14 @@
     .circle { fill:none; stroke: url(#grad); stroke-linecap:round; }
     #timerText { font-family:Arial, sans-serif; font-weight:bold; text-anchor:middle; dominant-baseline:middle; fill:#333; }
     .fixed-logo { position: fixed; top:20px; right:20px; width:120px; height:auto; }
+
+    /* Glow/pulse effect */
+    @keyframes pulse {
+      0% { stroke-width: var(--stroke); opacity: 1; }
+      50% { stroke-width: calc(var(--stroke) + 10); opacity: 0.6; }
+      100% { stroke-width: var(--stroke); opacity: 1; }
+    }
+    .pulse { animation: pulse 0.6s ease-out; }
   </style>
 </head>
 
@@ -78,22 +86,25 @@
       text.setAttribute("font-size", size*0.15);
       text.setAttribute("transform", `rotate(90, ${size/2}, ${size/2})`);
       svg.setAttribute("viewBox", `0 0 ${size} ${size}`);
+
+      // Store stroke for pulse animation
+      circle.style.setProperty('--stroke', stroke + 'px');
     }
 
     window.addEventListener("resize", resizeTimer);
     window.addEventListener("load", resizeTimer);
 
     // Smooth countdown synced with refresh
-    window.startTimer = function(seconds) {
+    window.startTimer = function(seconds){
       $("#inactive").hide();
       $("#active").show();
 
       const circle = document.getElementById("circle");
       const text = document.getElementById("timerText");
-      if (!circle || !text) return;
+      if(!circle || !text) return;
 
       const radius = circle.r.baseVal.value;
-      const circumference = 2 * Math.PI * radius;
+      const circumference = 2*Math.PI*radius;
 
       circle.style.strokeDasharray = `${circumference}`;
       circle.style.strokeDashoffset = `${circumference}`;
@@ -105,17 +116,16 @@
 
       function animateRing(now){
         const elapsed = (now - startTime)/1000;
-        const remaining = Math.max(seconds - elapsed,0);
+        const remaining = Math.max(seconds - elapsed, 0);
         circle.style.strokeDashoffset = (remaining/seconds)*circumference;
-
-        if(remaining > 0){
+        if(remaining>0){
           countdownTimeout = requestAnimationFrame(animateRing);
         }
       }
 
       function updateText(sec){
         text.textContent = formatTime(sec);
-        if(sec > 0){
+        if(sec>0){
           textTimeout = setTimeout(()=>updateText(sec-1),1000);
         }
       }
@@ -128,6 +138,14 @@
 
       requestAnimationFrame(animateRing);
       updateText(seconds);
+    }
+
+    // Trigger pulse animation
+    window.triggerPulse = function(){
+      const circle = document.getElementById("circle");
+      if(!circle) return;
+      circle.classList.add("pulse");
+      setTimeout(()=>circle.classList.remove("pulse"),600);
     }
   </script>
 </body>
